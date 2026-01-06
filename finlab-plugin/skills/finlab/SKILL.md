@@ -39,10 +39,19 @@ position = pb[position].is_smallest(10)  # Top 10 lowest P/B
 # 4. Backtest
 report = sim(position, resample="M", upload=False)
 
-# 5. Print metrics
+# 5. Print metrics - Two equivalent ways:
+
+# Option A: Using metrics object
 print(report.metrics.annual_return())
 print(report.metrics.sharpe_ratio())
 print(report.metrics.max_drawdown())
+
+# Option B: Using get_stats() dictionary (different key names!)
+stats = report.get_stats()
+print(f"CAGR: {stats['cagr']:.2%}")
+print(f"Sharpe: {stats['monthly_sharpe']:.2f}")
+print(f"MDD: {stats['max_drawdown']:.2%}")
+
 report
 ```
 
@@ -155,10 +164,17 @@ report = sim(
     upload=False
 )
 
-# Extract metrics
+# Extract metrics - Two ways:
+# Option A: Using metrics object
 print(f"Annual Return: {report.metrics.annual_return():.2%}")
 print(f"Sharpe Ratio: {report.metrics.sharpe_ratio():.2f}")
 print(f"Max Drawdown: {report.metrics.max_drawdown():.2%}")
+
+# Option B: Using get_stats() dictionary (note: different key names!)
+stats = report.get_stats()
+print(f"CAGR: {stats['cagr']:.2%}")           # 'cagr' not 'annual_return'
+print(f"Sharpe: {stats['monthly_sharpe']:.2f}") # 'monthly_sharpe' not 'sharpe_ratio'
+print(f"MDD: {stats['max_drawdown']:.2%}")     # same name
 ```
 
 See [backtesting-reference.md](backtesting-reference.md) for complete `sim()` API.

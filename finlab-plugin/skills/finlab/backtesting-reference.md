@@ -136,6 +136,103 @@ An instance of `Report` containing performance metrics, trades, and additional a
 
 ---
 
+## Report Class Reference
+
+The `sim()` function returns a `Report` object with multiple APIs for accessing performance metrics.
+
+### Method 1: `report.metrics` (Recommended for single metrics)
+
+Access individual metrics via the `Metrics` instance:
+
+```python
+report = sim(position, resample="M", upload=False)
+
+# Individual metric methods
+print(f"Annual Return: {report.metrics.annual_return():.2%}")
+print(f"Sharpe Ratio: {report.metrics.sharpe_ratio():.2f}")
+print(f"Max Drawdown: {report.metrics.max_drawdown():.2%}")
+```
+
+### Method 2: `report.get_stats()` (Returns dictionary)
+
+Returns a flat dictionary with all stats. Useful for batch access:
+
+```python
+stats = report.get_stats()
+
+# Dictionary keys (note: different names than metrics methods!)
+print(f"Annual Return: {stats['cagr']:.2%}")
+print(f"Sharpe Ratio: {stats['monthly_sharpe']:.2f}")
+print(f"Max Drawdown: {stats['max_drawdown']:.2%}")
+print(f"Win Ratio: {stats['win_ratio']:.2%}")
+print(f"Total Return: {stats['total_return']:.2%}")
+```
+
+**Available keys in `get_stats()`:**
+- `cagr` - Compound Annual Growth Rate
+- `daily_sharpe` - Daily Sharpe ratio
+- `monthly_sharpe` - Monthly Sharpe ratio
+- `max_drawdown` - Maximum drawdown (negative value)
+- `win_ratio` - Win rate of trades
+- `total_return` - Total cumulative return
+- `start` - Backtest start date (string)
+- `end` - Backtest end date (string)
+- `return_table` - Dict of monthly returns by year
+
+### Method 3: `report.get_metrics()` (Structured nested dictionary)
+
+Returns a nested dictionary organized by category:
+
+```python
+metrics = report.get_metrics()
+
+# Structured access
+print(metrics['profitability']['annualReturn'])
+print(metrics['ratio']['sharpeRatio'])
+print(metrics['risk']['maxDrawdown'])
+```
+
+**Categories:**
+- `backtest` - startDate, endDate, feeRatio, taxRatio, market, freq
+- `profitability` - annualReturn, alpha, beta, avgNStock, maxNStock
+- `risk` - maxDrawdown, avgDrawdown, avgDrawdownDays, valueAtRisk
+- `ratio` - sharpeRatio, sortinoRatio, calmarRatio, volatility
+- `winrate` - winRate, m12WinRate, expectancy, mae, mfe
+- `liquidity` - capacity, disposalStockRatio, warningStockRatio
+
+### Other Useful Methods
+
+```python
+# Display interactive report
+report.display()
+
+# Get trade details
+trades_df = report.get_trades()
+
+# Save to file
+report.to_html("report.html")
+report.to_pickle("report.pkl")
+
+# Load from file
+loaded_report = Report.from_pickle("report.pkl")
+
+# Run specific analysis
+report.run_analysis("Drawdown")
+report.run_analysis("MaeMfe")
+```
+
+### Key Attribute Mappings
+
+| Desired Metric | `report.metrics.X()` | `report.get_stats()['X']` |
+|----------------|----------------------|---------------------------|
+| Annual Return | `annual_return()` | `'cagr'` |
+| Sharpe Ratio | `sharpe_ratio()` | `'monthly_sharpe'` |
+| Max Drawdown | `max_drawdown()` | `'max_drawdown'` |
+| Win Rate | `win_rate()` | `'win_ratio'` |
+| Total Return | - | `'total_return'` |
+
+---
+
 ## Example Usage
 
 ### Basic Example
