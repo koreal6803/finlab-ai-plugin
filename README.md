@@ -22,9 +22,15 @@
 
 ## Quick Install
 
-### For Cursor / Antigravity IDE Users (Easiest!)
+### For Cursor Users (One-Click!)
 
-Just add this to your MCP config:
+<a href="cursor://anysphere.cursor-deeplink/mcp/install?name=finlab&config=eyJ1cmwiOiJodHRwczovL2ZpbmxhYi1haS1wbHVnaW4ua29yZWFsNjgwMy53b3JrZXJzLmRldi9tY3AifQ%3D%3D">
+  <img src="https://cursor.com/deeplink/mcp-install-dark.svg" alt="Install in Cursor" height="32">
+</a>
+
+### For Cursor / Antigravity IDE Users (Manual)
+
+Add this to your MCP config (`~/.cursor/mcp.json`):
 
 ```json
 {
