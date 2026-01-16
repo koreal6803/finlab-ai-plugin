@@ -13,14 +13,6 @@
 
 ## Quick Install
 
-### For Cursor Users (One-Click!)
-
-Copy this link to your browser to install:
-
-```
-cursor://anysphere.cursor-deeplink/mcp/install?name=finlab&config=eyJ1cmwiOiJodHRwczovL2ZpbmxhYi1haS1wbHVnaW4ua29yZWFsNjgwMy53b3JrZXJzLmRldi9tY3AifQ==
-```
-
 ### For AI CLI Users (Claude Code, Codex, Gemini, Antigravity...)
 
 Simply tell your AI assistant:
@@ -28,6 +20,14 @@ Simply tell your AI assistant:
 > "Please install https://github.com/koreal6803/finlab-ai"
 
 That's it. Your AI will handle the rest.
+
+### For Cursor Users
+
+Copy this link to your browser:
+
+```
+cursor://anysphere.cursor-deeplink/mcp/install?name=finlab&config=eyJ1cmwiOiJodHRwczovL2ZpbmxhYi1haS1wbHVnaW4ua29yZWFsNjgwMy53b3JrZXJzLmRldi9tY3AifQ==
+```
 
 ## Features
 

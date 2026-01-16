@@ -13,14 +13,6 @@
 
 ## 快速安裝
 
-### Cursor 用戶（一鍵安裝！）
-
-複製此連結到瀏覽器即可安裝：
-
-```
-cursor://anysphere.cursor-deeplink/mcp/install?name=finlab&config=eyJ1cmwiOiJodHRwczovL2ZpbmxhYi1haS1wbHVnaW4ua29yZWFsNjgwMy53b3JrZXJzLmRldi9tY3AifQ==
-```
-
 ### AI CLI 用戶（Claude Code、Codex、Gemini、Antigravity...）
 
 只要告訴你的 AI 助手：
@@ -28,6 +20,14 @@ cursor://anysphere.cursor-deeplink/mcp/install?name=finlab&config=eyJ1cmwiOiJodH
 > 「請幫我安裝 https://github.com/koreal6803/finlab-ai」
 
 就這樣。AI 會幫你處理好一切。
+
+### Cursor 用戶
+
+複製此連結到瀏覽器：
+
+```
+cursor://anysphere.cursor-deeplink/mcp/install?name=finlab&config=eyJ1cmwiOiJodHRwczovL2ZpbmxhYi1haS1wbHVnaW4ua29yZWFsNjgwMy53b3JrZXJzLmRldi9tY3AifQ==
+```
 
 ## 功能特色
 
