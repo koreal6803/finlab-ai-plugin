@@ -79,17 +79,7 @@ This works with **Claude Code**, **ChatGPT Codex CLI**, **Gemini CLI**, and othe
 
 ### Option 1: Claude Code
 
-**CLI commands:**
-
-```bash
-# Add marketplace
-claude plugin marketplace add koreal6803/finlab-ai
-
-# Install plugin
-claude plugin install finlab-plugin@finlab-plugins
-```
-
-**Or use slash commands in conversation:**
+Use slash commands in conversation:
 
 ```
 /plugin marketplace add koreal6803/finlab-ai

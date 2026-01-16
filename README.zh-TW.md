@@ -79,17 +79,7 @@ cursor://anysphere.cursor-deeplink/mcp/install?name=finlab&config=eyJ1cmwiOiJodH
 
 ### 方式一：Claude Code
 
-**CLI 命令：**
-
-```bash
-# 新增 marketplace
-claude plugin marketplace add koreal6803/finlab-ai
-
-# 安裝 plugin
-claude plugin install finlab-plugin@finlab-plugins
-```
-
-**或在對話中使用斜線命令：**
+在對話中使用斜線命令：
 
 ```
 /plugin marketplace add koreal6803/finlab-ai
