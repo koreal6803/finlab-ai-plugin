@@ -6,6 +6,18 @@ The FinLab data module provides comprehensive access to Taiwan stock market data
 
 ---
 
+## Table of Contents
+
+- [Usage](#usage) - Basic data retrieval with `data.get()`
+- [Data Discovery](#data-discovery) - Find datasets with `data.search()`
+- [Technical Indicators](#technical-indicators) - Compute indicators with `data.indicator()`
+- [Universe Filtering](#universe-filtering) - Filter by market/category
+- [Data Catalog](#data-catalog) - Complete dataset reference
+- [Storage Configuration](#storage-configuration) - Cache and storage settings
+- [Plotting Data](#plotting-data) - Visualization examples
+
+---
+
 ## Usage
 
 ### Basic Syntax
@@ -59,13 +71,17 @@ foreign_investment = data.get('institutional_investors_trading_summary:外陸資
 
 Use `data.search()` to programmatically find datasets from the Data Catalog.
 
+**Signature:**
 ```python
-data.search(keyword: str = None) -> list
+data.search(keyword: str = None, market: str = 'tw') -> list
 ```
 
-| Parameter | Description |
-|-----------|-------------|
-| `keyword` | Optional. Filter datasets by keyword (case-insensitive substring match). Returns all if omitted. |
+**Parameters:**
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `keyword` | str | None | Filter datasets by keyword (case-insensitive substring match). Returns all if omitted. |
+| `market` | str | 'tw' | Market to search: `'tw'` (Taiwan stocks), `'us'` (US stocks, testing), or `'all'` (both markets). |
 
 **Returns:** List of `"table:column"` strings, usable directly with `data.get()`.
 
@@ -73,16 +89,86 @@ data.search(keyword: str = None) -> list
 ```python
 from finlab import data
 
-# List all available datasets
+# List all available datasets (Taiwan market)
 all_data = data.search()
 
 # Search by keyword
 data.search('收盤')    # ['price:收盤價']
 data.search('營收')    # ['monthly_revenue:當月營收', ...]
 
+# Search US market data (testing)
+data.search('close', market='us')
+
 # Use result with data.get()
 results = data.search('收盤')
 df = data.get(results[0])
+```
+
+---
+
+## Technical Indicators
+
+Use `data.indicator()` to compute technical indicators using TA-Lib. Returns a FinLabDataFrame with the same structure as price data (date index, stock columns).
+
+**Signature:**
+```python
+data.indicator(
+    indname: str,
+    adjust_price: bool = False,
+    resample: str = 'D',
+    **kwargs
+) -> FinLabDataFrame | tuple
+```
+
+**Parameters:**
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `indname` | str | required | Indicator name: `SMA`, `EMA`, `RSI`, `MACD`, `STOCH`, `BBANDS`, `ATR`, `ADX`, etc. |
+| `adjust_price` | bool | False | Use adjusted prices for calculation. |
+| `resample` | str | 'D' | Data frequency: `'D'` (daily), `'W'` (weekly), `'M'` (monthly). |
+| `**kwargs` | - | - | Indicator-specific parameters (e.g., `timeperiod`, `fastperiod`, `slowperiod`). |
+
+**Returns:**
+- Single indicator (SMA, RSI, etc.): `FinLabDataFrame`
+- Multi-output indicator (STOCH, MACD, BBANDS): `tuple` of `FinLabDataFrame`
+
+**Common Indicators:**
+
+| Indicator | Parameters | Returns | Description |
+|-----------|------------|---------|-------------|
+| `SMA` | `timeperiod=30` | DataFrame | Simple Moving Average |
+| `EMA` | `timeperiod=30` | DataFrame | Exponential Moving Average |
+| `RSI` | `timeperiod=14` | DataFrame | Relative Strength Index (0-100) |
+| `STOCH` | `fastk_period=5, slowk_period=3, slowd_period=3` | (k, d) tuple | Stochastic Oscillator |
+| `MACD` | `fastperiod=12, slowperiod=26, signalperiod=9` | (macd, signal, hist) tuple | MACD |
+| `BBANDS` | `timeperiod=5, nbdevup=2, nbdevdn=2` | (upper, middle, lower) tuple | Bollinger Bands |
+| `ATR` | `timeperiod=14` | DataFrame | Average True Range |
+| `ADX` | `timeperiod=14` | DataFrame | Average Directional Index |
+
+**Examples:**
+```python
+from finlab import data
+
+# Simple moving average
+sma20 = data.indicator('SMA', timeperiod=20)
+sma60 = data.indicator('SMA', timeperiod=60)
+
+# RSI
+rsi = data.indicator('RSI', timeperiod=14)
+oversold = rsi < 30
+
+# Stochastic oscillator (returns tuple)
+k, d = data.indicator('STOCH', adjust_price=True)
+
+# MACD (returns tuple)
+macd, signal, hist = data.indicator('MACD')
+
+# Bollinger Bands (returns tuple)
+upper, middle, lower = data.indicator('BBANDS', timeperiod=20)
+
+# Weekly RSI
+rsi_weekly = data.indicator('RSI', timeperiod=14, resample='W')
 ```
 
 ---
@@ -336,6 +422,98 @@ adj_close = data.get('etl:adj_close')
 adj_close[['2330', '2317', '2454']].loc['2020':].rebase().plot(figsize=(12, 6))
 plt.title('股價走勢比較')
 plt.show()
+```
+
+---
+
+## Storage Configuration
+
+Control how data is cached locally. By default, FinLab caches data to disk to avoid repeated downloads.
+
+### data.set_storage()
+
+Configure the storage backend for data caching.
+
+**Signature:**
+```python
+data.set_storage(storage: Storage) -> None
+```
+
+**Parameters:**
+- `storage` (Storage, required): Storage backend instance. Options:
+  - `data.FileStorage()` - Disk-based storage (default)
+  - `data.CacheStorage()` - In-memory storage (faster, but lost on restart)
+
+**Example:**
+```python
+from finlab import data
+
+# Use in-memory storage (faster for repeated access in same session)
+data.set_storage(data.CacheStorage())
+
+# Use disk storage (default, persists across sessions)
+data.set_storage(data.FileStorage())
+```
+
+### data.clear()
+
+Clear all cached data from the current storage backend.
+
+**Signature:**
+```python
+data.clear() -> None
+```
+
+**Example:**
+```python
+from finlab import data
+
+# Clear all cached data
+data.clear()
+
+# Next data.get() will re-download from cloud
+close = data.get('price:收盤價')
+```
+
+### Configuration Flags
+
+Control data fetching behavior using module-level flags.
+
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `data.use_local_data_only` | bool | False | Prevent cloud downloads; use only local cache. Raises error if data not cached. |
+| `data.force_cloud_download` | bool | False | Always download fresh data from cloud, ignoring cache. |
+| `data.prefer_local_if_exists` | bool | False | Use local cache without checking expiry. Faster startup. |
+| `data.truncate_start` | str/None | None | Filter data to start from this date (format: `'YYYY-MM-DD'`). |
+| `data.truncate_end` | str/None | None | Filter data to end at this date (format: `'YYYY-MM-DD'`). |
+
+**Examples:**
+```python
+from finlab import data
+
+# Offline mode - use only local cache
+data.use_local_data_only = True
+close = data.get('price:收盤價')  # Fails if not cached
+
+# Force fresh download
+data.force_cloud_download = True
+close = data.get('price:收盤價')  # Always downloads
+
+# Use local cache without expiry check (faster)
+data.prefer_local_if_exists = True
+close = data.get('price:收盤價')
+
+# Limit data range
+data.truncate_start = '2020-01-01'
+data.truncate_end = '2023-12-31'
+close = data.get('price:收盤價')  # Only 2020-2023 data
+
+# Reset to defaults
+data.use_local_data_only = False
+data.force_cloud_download = False
+data.prefer_local_if_exists = False
+data.truncate_start = None
+data.truncate_end = None
 ```
 
 ---
