@@ -1,6 +1,7 @@
 ---
 name: finlab
 description: Comprehensive guide for FinLab quantitative trading package for Taiwan stock market (台股). Use when working with trading strategies, backtesting, Taiwan stock data, FinLabDataFrame, factor analysis, stock selection, or when the user mentions FinLab, trading, 回測, 策略, 台股, quant trading, or stock market analysis. Includes data access, strategy development, backtesting workflows, and best practices.
+compatibility: Requires Python 3.10+ and uv package manager (https://docs.astral.sh/uv/)
 ---
 
 # FinLab Quantitative Trading Package
@@ -30,13 +31,15 @@ That's it. Everything in between is YOUR job. Not theirs.
 
 ### Implementation
 
-1. **Write code? Run it.** Use Bash to execute Python. Don't dump code blocks and walk away.
+1. **Write code? Run it.** Use Bash to execute Python via `uv run`. Don't dump code blocks and walk away.
 
 2. **Generate files? Open them.** After saving a chart/report, run `open <filepath>` (macOS) or equivalent.
 
 3. **Fetch data? Show it.** Print the actual numbers. Users came for insights, not import statements.
 
 4. **Error occurs? Fix it.** Don't report the error and stop. Debug, retry, solve.
+
+5. **Missing dependencies? Install them.** Use `uv pip install <package>` — never ask the user to install manually.
 
 ### The Linus Test
 
@@ -48,15 +51,36 @@ If your response requires the user to do ANYTHING other than read the answer, yo
 
 ## Prerequisites
 
-**Before running any FinLab code, verify:**
+**Before running any FinLab code, verify these in order:**
 
-1. **FinLab is installed**:
+1. **uv is installed** (Python package manager):
 
    ```bash
-   python3 -c "import finlab" || python3 -m pip install finlab
+   uv --version || curl -LsSf https://astral.sh/uv/install.sh | sh
    ```
 
-2. **API Token is set** (required - finlab will fail without it):
+   After installing, ensure `uv` is on PATH:
+
+   ```bash
+   source $HOME/.local/bin/env 2>/dev/null  # Add uv to current shell
+   ```
+
+2. **FinLab is installed via uv**:
+
+   ```bash
+   uv python install 3.12  # Ensure Python is available (skip if already installed)
+   uv pip install --system finlab python-dotenv 2>/dev/null || uv pip install finlab python-dotenv
+   ```
+
+   **Or use `uv run` for zero-setup execution** (recommended for one-off scripts):
+
+   ```bash
+   uv run --with finlab --with python-dotenv python3 script.py
+   ```
+
+   `uv run --with` auto-creates a temporary environment with dependencies — no venv management needed.
+
+3. **API Token is set** (required - finlab will fail without it):
 
    ```bash
    echo $FINLAB_API_TOKEN

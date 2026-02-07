@@ -159,19 +159,35 @@ function getFactorExamples(factorType: string = 'all'): string {
   return matching.map(s => '## ' + s).join('\n\n');
 }
 
+const DEPRECATION_NOTICE = `⚠️ DEPRECATION NOTICE: This MCP server will be retired soon. Please switch to the FinLab Skill for a better experience (richer documentation, faster responses, no network dependency).
+
+To upgrade, run:
+  npx skills add koreal6803/finlab-ai -a claude-code -y
+
+After installing, you can remove this MCP server from your config.
+---
+
+`;
+
 function handleToolCall(name: string, args: Record<string, unknown>): string {
+  let result: string;
   switch (name) {
     case 'list_documents':
-      return listDocuments();
+      result = listDocuments();
+      break;
     case 'get_document':
-      return getDocument(args.doc_name as string);
+      result = getDocument(args.doc_name as string);
+      break;
     case 'search_finlab_docs':
-      return searchDocs(args.query as string);
+      result = searchDocs(args.query as string);
+      break;
     case 'get_factor_examples':
-      return getFactorExamples((args.factor_type as string) || 'all');
+      result = getFactorExamples((args.factor_type as string) || 'all');
+      break;
     default:
       return `Unknown tool: ${name}`;
   }
+  return DEPRECATION_NOTICE + result;
 }
 
 function handleMcpRequest(request: McpRequest): McpResponse {
@@ -230,6 +246,125 @@ export default {
       'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type',
     };
+
+    // Install script
+    if (url.pathname === '/install.sh') {
+      const script = `#!/bin/sh
+set -e
+
+REPO="koreal6803/finlab-ai"
+SKILL_SRC="finlab-plugin/skills/finlab"
+
+# --- Colors ---
+RED="\\033[0;31m"
+GREEN="\\033[0;32m"
+YELLOW="\\033[0;33m"
+CYAN="\\033[0;36m"
+BOLD="\\033[1m"
+RESET="\\033[0m"
+
+info()  { printf "\${CYAN}%s\${RESET}\\n" "$1"; }
+ok()    { printf "\${GREEN}%s\${RESET}\\n" "$1"; }
+warn()  { printf "\${YELLOW}%s\${RESET}\\n" "$1"; }
+err()   { printf "\${RED}%s\${RESET}\\n" "$1" >&2; }
+
+# --- Detect target ---
+detect_target() {
+  if command -v claude >/dev/null 2>&1; then
+    echo "claude-code"
+  elif command -v codex >/dev/null 2>&1; then
+    echo "codex"
+  elif command -v gemini >/dev/null 2>&1; then
+    echo "gemini-cli"
+  else
+    echo ""
+  fi
+}
+
+skill_dir() {
+  case "$1" in
+    claude-code) echo "\$HOME/.claude/skills/finlab" ;;
+    codex)       echo "\$HOME/.codex/skills/finlab" ;;
+    gemini-cli)  echo "\$HOME/.gemini/skills/finlab" ;;
+  esac
+}
+
+# --- Main ---
+printf "\\n\${BOLD}  FinLab AI Installer\${RESET}\\n"
+printf "  ────────────────────\\n\\n"
+
+TARGET=\$(detect_target)
+
+if [ -z "\$TARGET" ]; then
+  err "No supported AI CLI found."
+  echo ""
+  echo "  Please install one of:"
+  echo "    - Claude Code:  npm install -g @anthropic-ai/claude-code"
+  echo "    - Codex CLI:    npm install -g @openai/codex"
+  echo "    - Gemini CLI:   npm install -g @anthropic-ai/gemini-cli"
+  echo ""
+  exit 1
+fi
+
+info "Detected: \$TARGET"
+
+# Install uv if missing (needed to run Python code)
+if ! command -v uv >/dev/null 2>&1; then
+  info "Installing uv (Python package manager)..."
+  curl -LsSf https://astral.sh/uv/install.sh | sh
+  export PATH="\$HOME/.local/bin:\$PATH"
+  if command -v uv >/dev/null 2>&1; then
+    ok "uv installed successfully."
+  else
+    warn "uv installation failed. You can install it later: https://docs.astral.sh/uv/"
+  fi
+else
+  info "uv: already installed."
+fi
+
+# Try npx first
+if command -v npx >/dev/null 2>&1; then
+  info "Installing via npx..."
+  if npx skills add "\$REPO" -a "\$TARGET" -y 2>/dev/null; then
+    echo ""
+    ok "Done! FinLab AI skill installed for \$TARGET."
+    echo ""
+    echo "  Start your CLI and try: /finlab"
+    echo ""
+    exit 0
+  fi
+  warn "npx method failed, falling back to git clone..."
+fi
+
+# Fallback: git clone
+if ! command -v git >/dev/null 2>&1; then
+  err "git is not installed. Please install git or Node.js and try again."
+  exit 1
+fi
+
+DEST=\$(skill_dir "\$TARGET")
+info "Installing via git clone -> \$DEST"
+
+TMP=\$(mktemp -d)
+trap 'rm -rf "\$TMP"' EXIT
+
+git clone --depth 1 "https://github.com/\$REPO.git" "\$TMP/finlab-ai" 2>/dev/null
+
+mkdir -p "\$(dirname "\$DEST")"
+rm -rf "\$DEST"
+cp -r "\$TMP/finlab-ai/\$SKILL_SRC" "\$DEST"
+
+echo ""
+ok "Done! FinLab AI skill installed for \$TARGET."
+echo ""
+echo "  Installed to: \$DEST"
+echo "  Start your CLI and try: /finlab"
+echo ""
+`;
+      return new Response(script, {
+        headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+      });
+    }
 
     // Health check
     if (url.pathname === '/health' || url.pathname === '/') {

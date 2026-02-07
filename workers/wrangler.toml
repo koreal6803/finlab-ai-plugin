@@ -1,9 +1,15 @@
 # Cloudflare Workers configuration for FinLab MCP Server
 # See: https://developers.cloudflare.com/workers/wrangler/configuration/
 
-name = "finlab-mcp"
+name = "finlab-ai-plugin"
 main = "src/index.ts"
 compatibility_date = "2025-01-01"
+workers_dev = true
+
+# Custom domain
+routes = [
+  { pattern = "ai.finlab.finance/*", zone_name = "finlab.finance" }
+]
 
 [vars]
 SERVER_NAME = "finlab-docs"
