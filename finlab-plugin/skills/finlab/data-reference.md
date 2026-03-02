@@ -516,6 +516,31 @@ data.truncate_start = None
 data.truncate_end = None
 ```
 
+### Data Freshness Check
+
+Verify cached data is up-to-date before executing trades.
+
+```python
+from finlab import data
+
+# Check if all cached data is fresh (not expired, no pending crawl updates)
+if data.is_tradable():
+    print("Data is fresh — safe to trade")
+else:
+    print(f"Wait until: {data.suggested_tradable_time()}")
+
+# Check next cache expiry time (UTC)
+print(data.next_future_expiry())
+```
+
+| Function | Returns | Description |
+|----------|---------|-------------|
+| `data.is_tradable(market=None)` | `bool` | `True` when all cached data is not expired AND no more crawl updates expected before next market open |
+| `data.suggested_tradable_time(market=None)` | `datetime\|None` | When `is_tradable()` will become `True`. `None` if already tradable |
+| `data.next_future_expiry()` | `datetime\|None` | Next future expiry time (UTC) among cached datasets |
+
+These are also available as Report methods: `report.is_tradable()`, `report.suggested_tradable_time()`, `report.next_future_expiry()`.
+
 ---
 
 ## Related References

@@ -303,6 +303,36 @@ df = df.reindex(target_index, method='bfill')  # Lookahead bias
 df = df.reindex(target_index)  # Missing data
 ```
 
+### ✅ Use `verify_strategy()` to Auto-Detect Lookahead Bias
+
+`verify_strategy()` automatically tests your strategy for lookahead bias by truncating data at historical dates and comparing results against a full-data run.
+
+> **Note:** This is a diagnostic tool — it runs the full strategy multiple times and is slow. Only use it when the user explicitly asks to verify lookahead bias. Do NOT run it as part of routine strategy building. Requires finlab >= 1.5.8 (`pip install finlab --upgrade`).
+
+```python
+from finlab.verify import verify_strategy
+from finlab import data
+from finlab.backtest import sim
+
+def my_strategy():
+    close = data.get('price:收盤價')
+    pb = data.get('price_earning_ratio:股價淨值比')
+    position = pb[close > close.average(60)].is_smallest(10)
+    return sim(position, resample='M', upload=False)
+
+result = verify_strategy(my_strategy, n_tests=5)
+print(result.passed)       # True = no bias detected
+print(result.summary_df)   # Per-date test results
+```
+
+**Parameters:**
+- `strategy` (Callable, required): Zero-arg function returning a `Report` (output of `sim()`)
+- `n_tests` (int, default=5): Number of random truncation dates to test
+- `test_dates` (list[str], optional): Explicit dates (YYYY-MM-DD) to test in addition to random sample
+- `verbose` (bool, default=True): Print progress and summary
+
+**Returns:** `VerifyResult` with `.passed`, `.n_tests`, `.n_passed`, `.n_failed`, `.summary_df`, `.details`
+
 ---
 
 ## Stock Selection Patterns
@@ -473,22 +503,8 @@ resetKernel()
 **解決方案:**
 
 1. **等待重置** - 台灣時間早上 8 點會自動重置用量
-2. **升級 VIP** - 免費版 500 MB，VIP 版 5000 MB（10 倍）
-
-**告知用戶:**
-```
-您今日的資料用量已達上限（免費版 500 MB）。
-您可以：
-1. 等待台灣時間早上 8 點自動重置
-2. 升級 VIP 享有 5000 MB 額度（10 倍提升）
-
-👉 升級 VIP: https://www.finlab.finance/payment
-```
-
-**最佳化用量的建議:**
-- 避免重複取得相同數據，將常用數據存入變數
-- 使用 `data.universe()` 限制取得的股票範圍
-- 減少不必要的歷史數據範圍
+2. **升級方案** - 升級可獲得更多資料用量，詳見 https://www.finlab.finance/payment
+3. **減少用量** - 避免重複取得相同數據，將常用數據存入變數；使用 `data.universe()` 限制股票範圍
 
 ### Debugging Tips
 

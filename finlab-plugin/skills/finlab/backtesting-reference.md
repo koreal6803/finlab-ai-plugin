@@ -219,6 +219,10 @@ loaded_report = Report.from_pickle("report.pkl")
 # Run specific analysis
 report.run_analysis("Drawdown")
 report.run_analysis("MaeMfe")
+
+# Display ASCII chart in terminal (no Jupyter needed)
+report.to_terminal()
+report.to_terminal(height=8, width=60, show_benchmark=False)
 ```
 
 ### Key Attribute Mappings
