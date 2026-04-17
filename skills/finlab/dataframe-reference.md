@@ -13,7 +13,7 @@ FinlabDataFrame is a powerful extension of pandas DataFrame specifically designe
 - Multi-factor and industry neutralization
 - Integration with backtesting workflows
 
-**Contents:** [Constructor](#constructor) | [Index Conversion](#index-conversion-methods) | [Moving Average & Comparison](#moving-average--comparison-methods) | [Selection](#selection-methods) | [Signal Detection](#signal-detection-methods) | [Industry & Category](#industry--category-methods) | [Neutralization](#neutralization-methods) | [Quantile](#quantile-methods) | [Cross-Sectional (`.cs`)](#cross-sectional-accessor-cs) | [Within-Industry (`.sector`)](#within-industry-accessor-sector) | [Portfolio Weight (`.weight`)](#portfolio-weight-accessor-weight) | [Rolling Extensions](#rolling-extensions) | [PolarsFrame](#polarsframe-accessors) | [Auto Alignment](#automatic-index-alignment) | [Method Chaining](#method-chaining-patterns)
+**Contents:** [Constructor](#constructor) | [Index Conversion](#index-conversion-methods) | [Moving Average & Comparison](#moving-average--comparison-methods) | [Selection](#selection-methods) | [Signal Detection](#signal-detection-methods) | [Industry & Category](#industry--category-methods) | [Neutralization](#neutralization-methods) | [Quantile](#quantile-methods) | [Cross-Sectional (`.cs`)](#cross-sectional-accessor-cs) | [Within-Industry (`.sector`)](#within-industry-accessor-sector) | [Portfolio Weight (`.weight`)](#portfolio-weight-accessor-weight) | [Rolling Extensions](#rolling-extensions) | [Auto Alignment](#automatic-index-alignment) | [Method Chaining](#method-chaining-patterns)
 
 ---
 
@@ -859,20 +859,6 @@ vol60 = returns.rolling(60).std()
 # High-skew stocks (positive tail)
 skew = returns.rolling(60).skew()
 lottery = skew > skew.cs.rank() > 0.8  # top 20% positive skew
-```
-
----
-
-## PolarsFrame Accessors
-
-*(v2.0.0)* When operating on `PolarsFrame` (the polars-backed variant, installed via `pip install finlab[polars]`), the same `.cs`, `.sector`, and rolling extensions are available with identical semantics. This enables factor pipelines to run on large universes (e.g. US stocks) with polars performance.
-
-```python
-# PolarsFrame exposes:
-pf.cs.rank() / .zscore() / .demean() / .winsorize() / .bucket()
-pf.sector.rank() / .mean() / .std() / .median() / .sum() / .min() / .max() / .count()
-pf.sector.zscore() / .demean() / .winsorize() / .bucket()
-pf.rolling(n).std() / .var() / .skew() / .kurt() / .median()
 ```
 
 ---
