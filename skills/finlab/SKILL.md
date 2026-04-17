@@ -325,14 +325,16 @@ See [best-practices.md](best-practices.md) for more anti-patterns.
 
 ## Performance Defaults
 
-**Default to lazy + batch; only drop to plain pandas when debugging.** Production/strategy code should use `df.lazy()` (deferred evaluation — defers the compute graph until a terminal call materializes it, so chained ops avoid redundant passes; single-CPU) and `data.gets()` (one call fetches many datasets). Both landed in v2.0.0. Switch back to `data.get()` + eager pandas only when you need to print/inspect intermediate values interactively.
+**Pass `lazy=True` by default; drop to eager pandas only when debugging.** `data.get(..., lazy=True)` and `data.gets(..., lazy=True)` *(v2.0.0)* return lazy FinlabDataFrames that defer the compute graph until a terminal call materializes it — chained ops avoid redundant passes (single-CPU). Omit `lazy=True` when you need to print/inspect intermediate values interactively.
 
 ```python
-# ✅ Default: batch fetch + lazy compute
-price, volume, pe = data.gets('price:收盤價', 'price:成交股數', 'price_earning_ratio:本益比')
-close = price.lazy()
+# ✅ Default: fetch lazy directly
+price, volume, pe = data.gets(
+    'price:收盤價', 'price:成交股數', 'price_earning_ratio:本益比',
+    lazy=True,
+)
 
-# ✅ Debug: plain pandas for row-level inspection
+# ✅ Debug: eager pandas for row-level inspection
 close = data.get('price:收盤價')
 print(close.loc['2024-01-15', '2330'])
 ```

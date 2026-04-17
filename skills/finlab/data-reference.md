@@ -110,11 +110,13 @@ df = data.get(results[0])
 
 **Note:** `data.get()` emits an 80% usage warning before quota is exhausted *(v1.5.9)*, so long-running notebooks surface quota issues early rather than failing mid-run.
 
+Pass `lazy=True` *(v2.0.0)* to get a lazy FinlabDataFrame — chained ops defer execution until materialized. Recommended for production pipelines; see [Performance Defaults](SKILL.md#performance-defaults).
+
 ---
 
 ## Batch Download
 
-*(v2.0.0)* Fetch many datasets in one call. Returns a tuple in the order requested; shows a progress bar (terminal ANSI / Jupyter HTML, auto-detected).
+*(v2.0.0)* Fetch many datasets in one call. Returns a tuple in the order requested; shows a progress bar (terminal ANSI / Jupyter HTML, auto-detected). Pass `lazy=True` for lazy FinlabDataFrames (recommended for production).
 
 ```python
 from finlab import data
@@ -124,6 +126,7 @@ price, volume, pb, roe = data.gets(
     'price:成交股數',
     'price_earning_ratio:股價淨值比',
     'fundamental_features:ROE稅後',
+    lazy=True,
 )
 ```
 
