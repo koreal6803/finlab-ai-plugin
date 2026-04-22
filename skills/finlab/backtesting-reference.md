@@ -447,6 +447,6 @@ Internally `sim()` was refactored (v2.0.0) into five independently testable stag
 ## Related References
 
 - [FinlabDataFrame Reference](dataframe-reference.md) - Learn about enhanced DataFrame methods
-- [Data Reference](data-reference.md) - Explore available data sources
+- Use `data.search('keyword')` to explore available data sources (use Traditional Chinese keywords for TW market, English for US market)
 - [Factor Examples](factor-examples.md) - See complete strategy examples
 - [Factor Analysis Reference](factor-analysis-reference.md) - Analyze factor performance

@@ -864,6 +864,6 @@ report = backtest.sim(position)
 
 - [FinlabDataFrame Reference](dataframe-reference.md) - Enhanced DataFrame methods
 - [Backtesting Reference](backtesting-reference.md) - Backtest your strategies
-- [Data Reference](data-reference.md) - Complete data catalog
+- Use `data.search('keyword')` to explore the complete data catalog (use Traditional Chinese keywords for TW market, English for US market)
 - [Factor Analysis Reference](factor-analysis-reference.md) - Analyze factor performance
 - [Machine Learning Reference](machine-learning-reference.md) - ML-based strategies

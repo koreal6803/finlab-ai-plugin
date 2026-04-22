@@ -594,7 +594,7 @@ plt.show()
 ## Related References
 
 - [FinlabDataFrame Reference](dataframe-reference.md) - Enhanced DataFrame methods
-- [Data Reference](data-reference.md) - Available data sources
+- Use `data.search('keyword')` to discover available data sources (use Traditional Chinese keywords for TW market, English for US market)
 - [Factor Examples](factor-examples.md) - Practical factor calculations
 - [Machine Learning Reference](machine-learning-reference.md) - ML-based factor analysis
 - [Backtesting Reference](backtesting-reference.md) - Test factor-based strategies

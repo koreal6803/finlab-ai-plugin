@@ -149,7 +149,7 @@ with data.universe(market='TSE_OTC', category=['水泥工業']):
 data.set_universe(market='TSE_OTC', category='半導體')
 ```
 
-See [data-reference.md](data-reference.md) for complete data catalog.
+Use `data.search('keyword')` to discover available datasets (supports `market='us'` or `market='tw'`). Use Traditional Chinese keywords for Taiwan stocks (e.g. `data.search('營收', market='tw')`) and English keywords for US stocks (e.g. `data.search('revenue', market='us')`).
 
 ### Step 2: Create Factors & Conditions
 
@@ -262,7 +262,6 @@ See [trading-reference.md](trading-reference.md) for complete broker setup and O
 
 | File                                                           | Content                                    |
 | -------------------------------------------------------------- | ------------------------------------------ |
-| [data-reference.md](data-reference.md)                         | `data.get()`, `data.universe()`, 900+ 欄位 |
 | [backtesting-reference.md](backtesting-reference.md)           | `sim()` 參數、stop-loss、rebalancing       |
 | [trading-reference.md](trading-reference.md)                   | 券商設定、OrderExecutor、Position          |
 | [factor-examples.md](factor-examples.md)                       | 60+ 策略範例                               |
@@ -277,7 +276,7 @@ Short version pointers for features added in recent releases. Each reference fil
 
 **v2.0.0** (2026-04-04) — major release
 - `finlab.exceptions`: structured error hierarchy (`FinlabError`, `DataError`, `BacktestError`, ...) — see [backtesting-reference.md](backtesting-reference.md)
-- `data.gets()`: batch download (fetch many datasets in one call) with progress bar; `data.override()` / `DataContext` for scoped state — see [data-reference.md](data-reference.md)
+- `data.get(lazy=True)` / `data.gets(..., lazy=True)`: batch fetch + deferred compute; `data.override()` / `DataContext` for scoped global state
 - `df.cs` / `df.sector` / `df.weight` accessors; `rolling().std/var/skew/kurt/median` — see [dataframe-reference.md](dataframe-reference.md)
 - `PositionStreamMixin` for realtime position streaming — see [trading-reference.md](trading-reference.md)
 - `from finlab import FinlabDataFrame` top-level export

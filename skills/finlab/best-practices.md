@@ -126,7 +126,7 @@ data.set_universe(market='TSE_OTC', category='半導體', exclude_category='金�
 price = data.get('price:收盤價')
 ```
 
-See [data-reference.md](data-reference.md) for complete `data.universe()` usage.
+Use `data.search('keyword', market='tw')` to discover available datasets and `data.universe()` parameters. Use Traditional Chinese keywords for Taiwan stocks (e.g. `'營收'`) and English keywords for US stocks (e.g. `'revenue'`).
 
 ### ✅ Assign `resample` to Prevent Overtrading
 

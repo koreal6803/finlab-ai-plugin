@@ -593,7 +593,7 @@ print(f"\nAverage R²: {np.mean(scores):.4f} (+/- {np.std(scores):.4f})")
 ## Related References
 
 - [FinlabDataFrame Reference](dataframe-reference.md) - Enhanced DataFrame methods
-- [Data Reference](data-reference.md) - Available data sources
+- Use `data.search('keyword')` to discover available data sources (use Traditional Chinese keywords for TW market, English for US market)
 - [Factor Examples](factor-examples.md) - Factor-based strategies
 - [Factor Analysis Reference](factor-analysis-reference.md) - Analyze factor performance
 - [Backtesting Reference](backtesting-reference.md) - Backtest ML strategies

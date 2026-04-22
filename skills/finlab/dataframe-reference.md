@@ -930,6 +930,6 @@ report = sim(position, resample='M')
 ## Related References
 
 - [Backtesting Reference](backtesting-reference.md) - Learn how to backtest strategies using FinlabDataFrame
-- [Data Reference](data-reference.md) - Explore available data sources
+- Use `data.search('keyword')` to explore available data sources (use Traditional Chinese keywords for TW market, English for US market)
 - [Factor Examples](factor-examples.md) - See practical examples of using FinlabDataFrame in strategies
 - [Best Practices](best-practices.md) - Avoid common pitfalls including lookahead bias
