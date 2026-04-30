@@ -166,7 +166,7 @@ with data.universe(market='TSE_OTC', category=['水泥工業']):
 data.set_universe(market='TSE_OTC', category='半導體')
 ```
 
-Use `data.search('keyword')` to discover available datasets (supports `market='us'` or `market='tw'`). Use Traditional Chinese keywords for Taiwan stocks (e.g. `data.search('營收', market='tw')`) and English keywords for US stocks (e.g. `data.search('revenue', market='us')`).
+Use `data.search('keyword', market='<market>')` to discover available datasets. Supported markets: `tw`, `us`, `kr`, `jp`, `hk`. Use keywords in the dataset's native language (e.g. `data.search('營收', market='tw')`, `data.search('revenue', market='us')`).
 
 ### Step 2: Create Factors & Conditions
 

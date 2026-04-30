@@ -51,7 +51,7 @@ Position.from_report(
 
 **Parameters:**
 - `report` (Report, required): Backtest report object from `sim()`
-- `fund` (float, required): Total capital in TWD for position sizing
+- `fund` (float, required): Total capital for position sizing (in the broker's account currency)
 - `odd_lot` (bool, default=False): Enable odd lot (零股) trading for smaller positions
 
 **Returns:**
